@@ -1,17 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
+import MemorialCreationForm from '../components/MemorialCreationForm';
+import MemorialTypeSelection from '../components/MemorialTypeSelection';
 
 const CreateMemorialPage: React.FC = () => {
+  const [showWelcomeForm, setShowWelcomeForm] = useState(true);
+  const [userData, setUserData] = useState({ firstName: '', lastName: '' });
+
+  const handleWelcomeComplete = (formData: { firstName: string, lastName: string }) => {
+    setUserData(formData);
+    localStorage.setItem('userData', JSON.stringify(formData));
+    setShowWelcomeForm(false);
+  };
+
   return (
-    <div>
-      <h1 className="text-4xl font-serif font-bold mb-6">Create a Memorial</h1>
-      <p className="text-xl mb-8">
-        This is where you'll be able to create a new memorial for your loved one.
-        We're still working on this feature, but it will be available soon!
-      </p>
-      {/* Placeholder for the memorial creation form */}
-      <div className="bg-white shadow-md rounded-lg p-6">
-        <p className="text-lg font-semibold">Memorial Creation Form Coming Soon</p>
-      </div>
+    <div className="min-h-screen bg-beige">
+      {showWelcomeForm ? (
+        <MemorialCreationForm onSubmit={handleWelcomeComplete} />
+      ) : (
+        <MemorialTypeSelection />
+      )}
     </div>
   );
 };

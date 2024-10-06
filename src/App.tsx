@@ -1,8 +1,9 @@
 import React from 'react';
 import { HashRouter as Router, Route, Routes } from 'react-router-dom';
 import LandingPage from './pages/LandingPage';
-import InternalLayout from './components/InternalLayout';
-import MemorialCreationForm from './components/MemorialCreationForm';
+import CreateMemorialPage from './pages/CreateMemorialPage';
+import OnlineMemorialPage from './pages/OnlineMemorialPage';
+import LifeStoryPage from './pages/LifeStoryPage';
 import { ThemeProvider } from './contexts/ThemeContext';
 
 function App() {
@@ -11,10 +12,9 @@ function App() {
       <ThemeProvider>
         <Routes>
           <Route path="/" element={<LandingPage />} />
-          <Route element={<InternalLayout />}>
-            <Route path="/create-memorial" element={<MemorialCreationForm />} />
-            {/* Add more routes for internal pages here */}
-          </Route>
+          <Route path="/create-memorial" element={<CreateMemorialPage />} />
+          <Route path="/online-memorial" element={<OnlineMemorialPage />} />
+          <Route path="/life-story" element={<LifeStoryPage />} />
         </Routes>
       </ThemeProvider>
     </Router>

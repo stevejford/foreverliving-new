@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 
-const MemorialCreationForm: React.FC = () => {
+interface MemorialCreationFormProps {
+  onSubmit: (formData: { firstName: string, lastName: string }) => void;
+}
+
+const MemorialCreationForm: React.FC<MemorialCreationFormProps> = ({ onSubmit }) => {
   const [formData, setFormData] = useState({
-    name: '',
-    dateOfBirth: '',
-    dateOfPassing: '',
-    biography: '',
+    firstName: '',
+    lastName: '',
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prevState => ({
       ...prevState,
@@ -18,65 +20,55 @@ const MemorialCreationForm: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // TODO: Handle form submission (e.g., send data to backend)
-    console.log('Form submitted:', formData);
+    onSubmit(formData);
   };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-lg mx-auto mt-8 p-6 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-semibold mb-6 text-center">Create a Memorial</h2>
-      <div className="mb-4">
-        <label htmlFor="name" className="block text-gray-700 font-bold mb-2">Name of Loved One</label>
-        <input
-          type="text"
-          id="name"
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-          className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-forever-orange"
-          required
-        />
+    <div className="flex justify-center items-center min-h-screen bg-beige">
+      <div className="max-w-md w-full bg-white rounded-lg shadow-md p-8">
+        <h1 className="text-2xl font-semibold mb-4 text-center text-blue-600">Welcome to Memories</h1>
+        <p className="text-center mb-6 text-gray-600">
+          Your digital space to preserve cherished moments, connect with family and friends,
+          and together create lasting tributes for your loved one.
+        </p>
+        <p className="text-center mb-6 text-gray-600">
+          To enhance and personalise your experience, please share a bit about yourself:
+        </p>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label htmlFor="firstName" className="block text-gray-700 font-medium mb-2">First name</label>
+            <input
+              type="text"
+              id="firstName"
+              name="firstName"
+              value={formData.firstName}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Enter your first name"
+              required
+            />
+          </div>
+          <div className="mb-6">
+            <label htmlFor="lastName" className="block text-gray-700 font-medium mb-2">Last name (optional)</label>
+            <input
+              type="text"
+              id="lastName"
+              name="lastName"
+              value={formData.lastName}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Enter your last name"
+            />
+          </div>
+          <button 
+            type="submit" 
+            className="w-full bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors"
+          >
+            Continue
+          </button>
+        </form>
       </div>
-      <div className="mb-4">
-        <label htmlFor="dateOfBirth" className="block text-gray-700 font-bold mb-2">Date of Birth</label>
-        <input
-          type="date"
-          id="dateOfBirth"
-          name="dateOfBirth"
-          value={formData.dateOfBirth}
-          onChange={handleChange}
-          className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-forever-orange"
-          required
-        />
-      </div>
-      <div className="mb-4">
-        <label htmlFor="dateOfPassing" className="block text-gray-700 font-bold mb-2">Date of Passing</label>
-        <input
-          type="date"
-          id="dateOfPassing"
-          name="dateOfPassing"
-          value={formData.dateOfPassing}
-          onChange={handleChange}
-          className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-forever-orange"
-          required
-        />
-      </div>
-      <div className="mb-4">
-        <label htmlFor="biography" className="block text-gray-700 font-bold mb-2">Biography</label>
-        <textarea
-          id="biography"
-          name="biography"
-          value={formData.biography}
-          onChange={handleChange}
-          className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-forever-orange"
-          rows={5}
-          required
-        ></textarea>
-      </div>
-      <button type="submit" className="w-full bg-forever-orange text-white font-bold py-2 px-4 rounded-lg hover:bg-opacity-90 transition-colors">
-        Create Memorial
-      </button>
-    </form>
+    </div>
   );
 };
 
