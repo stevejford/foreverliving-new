@@ -1,24 +1,15 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import tailwindcss from 'tailwindcss'
-import autoprefixer from 'autoprefixer'
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
   base: '/foreverliving-new/', // Adjust this to match your repo name
   build: {
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: true,
-        drop_debugger: true,
+    rollupOptions: {
+      output: {
+        manualChunks: undefined,
       },
-    },
-  },
-  css: {
-    postcss: {
-      plugins: [tailwindcss, autoprefixer],
     },
   },
 })
