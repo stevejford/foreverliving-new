@@ -6,7 +6,7 @@ import autoprefixer from 'autoprefixer'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: '/foreverliving-new/', // Add this line
+  base: '/foreverliving-new/', // Adjust this to match your repo name
   build: {
     minify: 'terser',
     terserOptions: {
