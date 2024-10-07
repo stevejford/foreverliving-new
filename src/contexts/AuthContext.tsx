@@ -1,28 +1,51 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { auth } from '../firebase/config'; // Adjust this import based on your Firebase setup
-import { User } from 'firebase/auth';
+import { User, signInWithEmailAndPassword, signOut, signInWithPopup, onAuthStateChanged } from 'firebase/auth';
+import { auth, googleProvider } from '../firebase/config';
 
 interface AuthContextType {
   currentUser: User | null;
+  login: (email: string, password: string) => Promise<void>;
+  logout: () => Promise<void>;
+  loginWithGoogle: () => Promise<void>;
 }
 
-const AuthContext = createContext<AuthContextType>({ currentUser: null });
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const AuthProvider: React.FC = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(user => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
     });
-
     return unsubscribe;
   }, []);
 
+  const login = (email: string, password: string) => {
+    return signInWithEmailAndPassword(auth, email, password);
+  };
+
+  const logout = () => {
+    return signOut(auth);
+  };
+
+  const loginWithGoogle = () => {
+    return signInWithPopup(auth, googleProvider);
+  };
+
   const value = {
-    currentUser
+    currentUser,
+    login,
+    logout,
+    loginWithGoogle,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

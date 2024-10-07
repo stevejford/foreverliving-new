@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link as RouterLink, useLocation } from 'react-router-dom';
+import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
 import { Heart, LogIn, Menu, X } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -8,6 +8,7 @@ const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { currentUser, logout } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -29,16 +30,15 @@ const Header: React.FC = () => {
   const handleLogout = async () => {
     try {
       await logout();
+      navigate('/'); // Redirect to home page after logout
     } catch (error) {
       console.error('Failed to log out', error);
     }
   };
 
-  // Updated condition to check for login page
-  const isLoginPage = location.pathname === '/login' || location.pathname === '/login2';
-
-  if (isLoginPage) {
-    return null; // Don't render the header on login pages
+  // Only render the header on the landing page
+  if (location.pathname !== '/') {
+    return null;
   }
 
   return (

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { EyeIcon, EyeOffIcon, Heart } from 'lucide-react'
 import { Link, useNavigate } from "react-router-dom"
-import { signInWithEmailAndPasswordFunc } from "../firebase/auth"
+import { useAuth } from "../contexts/AuthContext"
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
@@ -13,6 +13,8 @@ export default function LoginPage() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+
+  const { login, loginWithGoogle } = useAuth()
 
   useEffect(() => {
     const updateImageHeight = () => {
@@ -34,11 +36,25 @@ export default function LoginPage() {
     setError(null)
     setIsLoading(true)
     try {
-      await signInWithEmailAndPasswordFunc(email, password)
+      await login(email, password)
       navigate('/create-memorial')
     } catch (err: any) {
       console.error('Error signing in with email and password', err)
       setError(err.message || 'Failed to log in.')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleGoogleSignIn = async () => {
+    setError(null)
+    setIsLoading(true)
+    try {
+      await loginWithGoogle()
+      navigate('/create-memorial')
+    } catch (err: any) {
+      console.error('Error signing in with Google', err)
+      setError(err.message || 'Failed to log in with Google.')
     } finally {
       setIsLoading(false)
     }
@@ -108,6 +124,22 @@ export default function LoginPage() {
               </button>
             </form>
             {error && <p className="mt-2 text-red-500 text-sm">{error}</p>}
+            <div className="mt-4 relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-300"></div>
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-white text-gray-500">Or</span>
+              </div>
+            </div>
+            <button
+              onClick={handleGoogleSignIn}
+              className="mt-4 w-full bg-white border border-gray-300 text-gray-700 font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline hover:bg-gray-50 flex items-center justify-center"
+              disabled={isLoading}
+            >
+              <img src="/google-icon.png" alt="Google" className="w-5 h-5 mr-2" />
+              Sign in with Google
+            </button>
             <p className="mt-4 text-sm text-gray-600 text-center">
               Don't have an account? <Link to="/create-account" className="text-blue-600 hover:underline">Create an account</Link>
             </p>
