@@ -13,12 +13,13 @@
   },
   "dependencies": {
     "firebase": "^9.22.0",
+    "framer-motion": "^11.11.1",
     "lucide-react": "^0.294.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "react-masonry-css": "^1.0.16",
     "react-router-dom": "^6.0.0",
-    "react-scroll": "^1.9.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-scroll": "^1.9.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",
