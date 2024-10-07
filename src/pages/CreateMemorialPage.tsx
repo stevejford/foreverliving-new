@@ -1,23 +1,34 @@
 import React, { useState } from 'react';
-import MemorialCreationForm from '../components/MemorialCreationForm';
+import { useNavigate } from 'react-router-dom';
 import MemorialTypeSelection from '../components/MemorialTypeSelection';
+import MemorialCreationForm from '../components/MemorialCreationForm';
 
 const CreateMemorialPage: React.FC = () => {
-  const [showWelcomeForm, setShowWelcomeForm] = useState(true);
-  const [userData, setUserData] = useState({ firstName: '', lastName: '' });
+  const [showSelection, setShowSelection] = useState(false);
+  const navigate = useNavigate();
 
-  const handleWelcomeComplete = (formData: { firstName: string, lastName: string }) => {
-    setUserData(formData);
-    localStorage.setItem('userData', JSON.stringify(formData));
-    setShowWelcomeForm(false);
+  const handleFormSubmit = (data: any) => {
+    // Save form data to localStorage or state management
+    localStorage.setItem('memorialData', JSON.stringify(data));
+    setShowSelection(true);
+  };
+
+  const handleTypeSelect = (type: string) => {
+    // Save selected type and navigate to appropriate page
+    localStorage.setItem('memorialType', type);
+    if (type === 'online') {
+      navigate('/online-memorial');
+    } else {
+      navigate('/life-story');
+    }
   };
 
   return (
-    <div className="min-h-screen bg-beige">
-      {showWelcomeForm ? (
-        <MemorialCreationForm onSubmit={handleWelcomeComplete} />
+    <div>
+      {!showSelection ? (
+        <MemorialCreationForm onSubmit={handleFormSubmit} />
       ) : (
-        <MemorialTypeSelection />
+        <MemorialTypeSelection onSelect={handleTypeSelect} />
       )}
     </div>
   );

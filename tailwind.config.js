@@ -11,8 +11,9 @@ module.exports = {
         'forever-orange': '#your-orange-color-code',
         'forever-orange-dark': '#your-darker-orange-color-code',
         blue: {
-          500: '#3b82f6', // Adjust this to match your exact blue shade
+          500: '#4a90e2', // Adjust this to match the exact blue in the design
           600: '#2563eb', // Adjust this to match your exact blue shade
+          700: '#2171d3', // Darker blue for the right side text
         },
       },
     },

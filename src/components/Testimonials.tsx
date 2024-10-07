@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Star } from 'lucide-react';
-import Masonry from 'react-masonry-css';
+import Masonry from "react-masonry-css";
 
 interface Testimonial {
   id: string;

@@ -1,20 +1,19 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
-import Header from './Header';
-import Footer from './Footer';
-import HamburgerMenu from './HamburgerMenu';
-import SideMenu from './SideMenu';
 
 const InternalLayout: React.FC = () => {
   return (
-    <div className="flex flex-col min-h-screen bg-warm-beige">
-      <Header />
-      <HamburgerMenu />
-      <SideMenu />
-      <main className="flex-grow container mx-auto px-4 py-8 md:ml-16">
+    <div className="flex flex-col min-h-screen bg-[#f8f8f8]"> {/* Soft white background */}
+      <header className="bg-[#2a2a2a] text-white py-4">
+        {/* Blank header - content can be added here later */}
+        <div className="container mx-auto px-4">
+          {/* Empty for now */}
+        </div>
+      </header>
+      
+      <main className="flex-grow container mx-auto px-4 py-8">
         <Outlet />
       </main>
-      <Footer />
     </div>
   );
 };

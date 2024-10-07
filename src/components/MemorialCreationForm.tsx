@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import { addDoc, collection } from 'firebase/firestore';
+import { db } from '../firebase/config'; // Make sure this path is correct
+import { useNavigate } from 'react-router-dom';
 
 interface MemorialCreationFormProps {
   onSubmit: (formData: { firstName: string, lastName: string }) => void;
@@ -9,6 +12,9 @@ const MemorialCreationForm: React.FC<MemorialCreationFormProps> = ({ onSubmit })
     firstName: '',
     lastName: '',
   });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -18,9 +24,32 @@ const MemorialCreationForm: React.FC<MemorialCreationFormProps> = ({ onSubmit })
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    onSubmit(formData);
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      // Add the user's name to Firestore
+      const docRef = await addDoc(collection(db, 'users'), {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        createdAt: new Date()
+      });
+
+      console.log("Document written with ID: ", docRef.id);
+
+      // Call the onSubmit prop function
+      onSubmit(formData);
+
+      // Navigate to the CreateMemorialPage
+      navigate('/create-memorial');
+    } catch (error) {
+      console.error("Error adding document: ", error);
+      setError('An error occurred while saving your information. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -60,11 +89,13 @@ const MemorialCreationForm: React.FC<MemorialCreationFormProps> = ({ onSubmit })
               placeholder="Enter your last name"
             />
           </div>
+          {error && <p className="text-red-500 mb-4">{error}</p>}
           <button 
             type="submit" 
             className="w-full bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors"
+            disabled={isLoading}
           >
-            Continue
+            {isLoading ? 'Saving...' : 'Continue'}
           </button>
         </form>
       </div>

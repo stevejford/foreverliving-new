@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Heart } from 'lucide-react';
 import HeartExplosion from './HeartExplosion';
+import { useAuth } from '../contexts/AuthContext';
 
 const Hero: React.FC = () => {
   const [showHearts, setShowHearts] = useState(false);
-  const navigate = useNavigate();
+  const { currentUser } = useAuth();
 
   const handleStartMemorial = () => {
     setShowHearts(true);
     setTimeout(() => {
       setShowHearts(false);
-      navigate('/create-memorial');
     }, 4000);
   };
 
@@ -27,13 +27,16 @@ const Hero: React.FC = () => {
       <div className="relative z-10 text-center text-white px-4 max-w-4xl mx-auto">
         <h1 className="text-5xl md:text-7xl font-serif font-bold mb-6 leading-tight">Honor Your Loved Ones' Legacy</h1>
         <p className="text-xl md:text-2xl mb-8 max-w-2xl mx-auto">Create beautiful digital memorials to celebrate and remember the lives of those who matter most.</p>
-        <button 
-          onClick={handleStartMemorial}
-          className="btn-primary text-xl px-8 py-4 inline-flex items-center"
-        >
-          <Heart size={24} className="mr-2" />
-          Start a Memorial
-        </button>
+        {!currentUser && (
+          <Link 
+            to="/create-account"
+            onClick={handleStartMemorial}
+            className="btn-primary text-xl px-8 py-4 inline-flex items-center"
+          >
+            <Heart size={24} className="mr-2" />
+            Start a Memorial
+          </Link>
+        )}
       </div>
       {showHearts && <HeartExplosion />}
     </section>

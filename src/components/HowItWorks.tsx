@@ -12,9 +12,9 @@ const HowItWorks: React.FC = () => {
     <section id="how-it-works" className="py-20 bg-[#2a2a2a] text-white">
       <div className="container mx-auto px-4">
         <h2 className="text-4xl font-bold text-center mb-12">How It Works</h2>
-        <div className="flex flex-col md:flex-row justify-around items-start">
+        <div className="flex flex-col md:flex-row justify-around items-start space-y-12 md:space-y-0">
           {steps.map((step, index) => (
-            <div key={index} className="text-center mb-8 md:mb-0 flex flex-col items-center max-w-xs">
+            <div key={index} className="text-center flex flex-col items-center max-w-xs mx-auto">
               <div className="text-[#ff4d79] mb-6 bg-[#3a3a3a] p-6 rounded-full">{step.icon}</div>
               <h3 className="text-2xl font-semibold mb-4">{step.title}</h3>
               <p className="text-gray-300">{step.description}</p>
