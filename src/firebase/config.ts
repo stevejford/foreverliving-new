@@ -15,27 +15,8 @@ const firebaseConfig = {
 
 console.log("Firebase config:", JSON.stringify(firebaseConfig, null, 2));
 
-let app;
-let auth;
-let analytics;
-let db;
-
-try {
-  app = initializeApp(firebaseConfig);
-  console.log("Firebase app initialized successfully");
-
-  auth = getAuth(app);
-  console.log("Firebase auth initialized successfully");
-
-  analytics = getAnalytics(app);
-  console.log("Firebase analytics initialized successfully");
-
-  db = getFirestore(app);
-  console.log("Firebase Firestore initialized successfully");
-} catch (error) {
-  console.error("Error initializing Firebase:", error);
-  throw error;
-}
-
-export { app, auth, analytics, db };
+const app = initializeApp(firebaseConfig);
+export const auth = getAuth(app);
+export const db = getFirestore(app);
+export const analytics = getAnalytics(app);
 export const googleProvider = new GoogleAuthProvider();

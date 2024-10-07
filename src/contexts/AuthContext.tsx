@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { User, signInWithEmailAndPassword, signOut, signInWithPopup, onAuthStateChanged } from 'firebase/auth';
+import { User, signInWithEmailAndPassword, signOut, signInWithPopup } from 'firebase/auth';
 import { auth, googleProvider } from '../firebase/config';
 
 interface AuthContextType {
@@ -19,11 +19,11 @@ export const useAuth = () => {
   return context;
 };
 
-export const AuthProvider: React.FC = ({ children }) => {
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = auth.onAuthStateChanged(user => {
       setCurrentUser(user);
     });
     return unsubscribe;
