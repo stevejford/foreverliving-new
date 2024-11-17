@@ -45,11 +45,13 @@ export default function Home() {
       {/* Video Background */}
       <video
         className="absolute top-0 left-0 w-full h-full object-cover brightness-50"
-        src="/images/9218233-hd_1920_1080_30fps.mp4"
+        src="/videos/9218233-hd_1920_1080_30fps.mp4"
         autoPlay
         loop
         muted
         playsInline
+        preload="auto"
+        poster="/images/poster.jpg"
       />
 
       {/* Multiple Overlay Layers for better text contrast */}

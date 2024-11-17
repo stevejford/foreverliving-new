@@ -18,9 +18,10 @@ export default function AuthLayout({ children, title, subtitle }: AuthLayoutProp
           loop
           muted
           playsInline
-        >
-          <source src="/images/9218233-hd_1920_1080_30fps.mp4" type="video/mp4" />
-        </video>
+          preload="auto"
+          poster="/images/poster.jpg"
+          src="/videos/9218233-hd_1920_1080_30fps.mp4"
+        />
         <div className="absolute inset-0 bg-black/60" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/50" />
         

@@ -12,6 +12,19 @@ const nextConfig = {
     domains: ['nqahimgeesyjmnvjbmwj.supabase.co'],
   },
   webpack: (config, { isServer }) => {
+    // Add video file handling
+    config.module.rules.push({
+      test: /\.(mp4|webm|ogg)$/,
+      use: {
+        loader: 'file-loader',
+        options: {
+          publicPath: '/_next/static/videos/',
+          outputPath: 'static/videos/',
+          name: '[name].[hash].[ext]',
+        },
+      },
+    });
+
     if (!isServer) {
       config.watchOptions = {
         poll: 1000,
@@ -19,7 +32,12 @@ const nextConfig = {
       }
     }
     return config
-  }
+  },
+  // Optimize for production
+  experimental: {
+    optimizeCss: true,
+    scrollRestoration: true,
+  },
 }
 
 module.exports = nextConfig
