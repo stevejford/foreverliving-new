@@ -1,7 +1,7 @@
 "use client"
 
-import * as React from "react"
-import { IoChevronDown } from "react-icons/io5"
+import * as React from 'react'
+import { CustomSelect } from '@/components/ui/custom-select'
 
 interface DateInputProps {
   value?: Date
@@ -17,103 +17,19 @@ const months = [
   "July", "August", "September", "October", "November", "December"
 ]
 
-function CustomSelect({ 
-  value, 
-  options, 
-  placeholder, 
-  onChange,
-  width = "w-[200px]"
-}: { 
-  value?: string
-  options: string[]
-  placeholder: string
-  onChange: (value: string) => void
-  width?: string
-}) {
-  const [isActive, setIsActive] = React.useState(false)
-  
-  React.useEffect(() => {
-    const handleClick = (event: MouseEvent) => {
-      const target = event.target as HTMLElement
-      if (!target.closest(".dropdown")) {
-        setIsActive(false)
-      }
-    }
-    
-    document.addEventListener("click", handleClick)
-    return () => document.removeEventListener("click", handleClick)
-  }, [])
-
-  return (
-    <div className={`${width} relative dropdown`}>
-      <button
-        className="w-full bg-[#fff] border border-[#d1d1d1] rounded-xl justify-between px-3 py-2 flex items-center gap-2 cursor-pointer"
-        onClick={() => setIsActive(!isActive)}
-        type="button"
-      >
-        <span className="truncate">{value || placeholder}</span>
-        <IoChevronDown
-          className={`${
-            isActive ? "rotate-[180deg]" : "rotate-0"
-          } transition-all duration-300 text-[1.2rem] flex-shrink-0`}
-        />
-      </button>
-      <div
-        className={`${
-          isActive ? "opacity-100 scale-[1]" : "opacity-0 scale-[0.8] pointer-events-none"
-        } w-full absolute top-[calc(100%+4px)] left-0 right-0 z-40 bg-[#fff] rounded-xl overflow-hidden transition-all duration-300 ease-in-out`}
-        style={{
-          boxShadow: "0 15px 60px -15px rgba(0, 0, 0, 0.3)",
-          maxHeight: "200px",
-        }}
-      >
-        <div className="overflow-y-auto max-h-[200px] scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
-          {options.map((option, index) => (
-            <p
-              className="py-2 px-4 hover:bg-[#ececec] transition-all duration-200"
-              key={index}
-              onClick={() => {
-                onChange(option)
-                setIsActive(false)
-              }}
-            >
-              {option}
-            </p>
-          ))}
-        </div>
-      </div>
-    </div>
-  )
-}
+const days = Array.from({ length: 31 }, (_, i) => i + 1)
+const currentYear = new Date().getFullYear()
+const years = Array.from({ length: 100 }, (_, i) => currentYear - i)
 
 export function DateInput({ 
   value, 
   onChange, 
   label, 
-  error,
-  startYear = 1950,
-  endYear = new Date().getFullYear()
+  error 
 }: DateInputProps) {
   const [month, setMonth] = React.useState<number | undefined>(value?.getMonth())
   const [day, setDay] = React.useState<number | undefined>(value?.getDate())
   const [year, setYear] = React.useState<number | undefined>(value?.getFullYear())
-
-  const years = React.useMemo(() => {
-    return Array.from(
-      { length: endYear - startYear + 1 }, 
-      (_, i) => (endYear - i).toString()
-    )
-  }, [startYear, endYear])
-
-  const daysInMonth = React.useMemo(() => {
-    if (!month || !year) return 31
-    return new Date(parseInt(year), month + 1, 0).getDate()
-  }, [month, year])
-
-  const days = React.useMemo(() => 
-    Array.from({ length: daysInMonth }, (_, i) => (i + 1).toString()),
-    [daysInMonth]
-  )
 
   const updateDate = React.useCallback((newMonth?: number, newDay?: number, newYear?: number) => {
     if (typeof newMonth === 'number' && typeof newDay === 'number' && typeof newYear === 'number') {
@@ -137,46 +53,28 @@ export function DateInput({
   }, [value])
 
   return (
-    <div className="space-y-2">
-      {label && (
-        <label className="block text-sm font-medium text-gray-700">
-          {label}
-        </label>
-      )}
+    <div className="flex flex-col gap-2">
+      {label && <label className="text-sm font-medium">{label}</label>}
       <div className="flex gap-2">
         <CustomSelect
           value={month !== undefined ? months[month] : undefined}
           options={months}
           placeholder="Month"
-          onChange={(value) => {
-            const newMonth = months.indexOf(value)
-            setMonth(newMonth)
-            updateDate(newMonth, day, year)
-          }}
-          width="w-[140px]"
+          onChange={(value) => setMonth(months.indexOf(value))}
+          width="w-[150px]"
         />
-
         <CustomSelect
           value={day?.toString()}
-          options={days}
+          options={days.map(String)}
           placeholder="Day"
-          onChange={(value) => {
-            const newDay = parseInt(value)
-            setDay(newDay)
-            updateDate(month, newDay, year)
-          }}
-          width="w-[90px]"
+          onChange={(value) => setDay(parseInt(value, 10))}
+          width="w-[100px]"
         />
-
         <CustomSelect
           value={year?.toString()}
-          options={years}
+          options={years.map(String)}
           placeholder="Year"
-          onChange={(value) => {
-            const newYear = parseInt(value)
-            setYear(newYear)
-            updateDate(month, day, newYear)
-          }}
+          onChange={(value) => setYear(parseInt(value, 10))}
           width="w-[120px]"
         />
       </div>

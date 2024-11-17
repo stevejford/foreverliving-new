@@ -1,3 +1,11 @@
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[];
+
 export type Profile = {
   id: string;
   user_id: string;
@@ -47,10 +55,43 @@ export type MemorialCollaborator = {
   created_at: string;
 };
 
-export type Database = {
-  profiles: Profile;
-  memorials: Memorial;
-  memories: Memory;
-  comments: Comment;
-  memorial_collaborators: MemorialCollaborator;
-};
+export interface Database {
+  public: {
+    Tables: {
+      profiles: {
+        Row: Profile;
+        Insert: Partial<Profile>;
+        Update: Partial<Profile>;
+      };
+      memorials: {
+        Row: Memorial;
+        Insert: Partial<Memorial>;
+        Update: Partial<Memorial>;
+      };
+      memories: {
+        Row: Memory;
+        Insert: Partial<Memory>;
+        Update: Partial<Memory>;
+      };
+      comments: {
+        Row: Comment;
+        Insert: Partial<Comment>;
+        Update: Partial<Comment>;
+      };
+      memorial_collaborators: {
+        Row: MemorialCollaborator;
+        Insert: Partial<MemorialCollaborator>;
+        Update: Partial<MemorialCollaborator>;
+      };
+    };
+    Views: {
+      [_ in never]: never;
+    };
+    Functions: {
+      [_ in never]: never;
+    };
+    Enums: {
+      collaborator_role: 'admin' | 'contributor' | 'viewer';
+    };
+  };
+}

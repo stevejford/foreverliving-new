@@ -1,48 +1,58 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { withAuth } from '@/utils/auth-helpers';
+import { NextResponse } from 'next/server'
+import { createServerSupabaseClient } from '@/utils/auth-helpers'
 
-export async function GET(request: NextRequest) {
-  return withAuth(request, async (userId, supabase) => {
-    // Get user profile data
-    const { data: profile, error } = await supabase
-      .from('profiles')
-      .select('first_name, last_name, email')
-      .eq('id', userId)
-      .single();
+export async function GET() {
+  try {
+    const supabase = createServerSupabaseClient()
+    const { data: { session } } = await supabase.auth.getSession()
 
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+    if (!session) {
+      return NextResponse.json({ error: 'Not authenticated' }, { status: 401 })
     }
+
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', session.user.id)
+      .single()
 
     return NextResponse.json({
-      message: 'Authentication successful',
-      user: profile
-    });
-  });
+      user: session.user,
+      profile
+    })
+  } catch (error) {
+    console.error('Error in test-auth route:', error)
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    )
+  }
 }
 
-export async function POST(request: NextRequest) {
-  return withAuth(request, async (userId, supabase) => {
-    try {
-      const body = await request.json();
-      
-      // Example: Update user profile
-      const { error } = await supabase
-        .from('profiles')
-        .update({
-          updated_at: new Date().toISOString(),
-          ...body
-        })
-        .eq('id', userId);
+export async function POST() {
+  try {
+    const supabase = createServerSupabaseClient()
+    const { data: { session } } = await supabase.auth.getSession()
 
-      if (error) throw error;
-
-      return NextResponse.json({ message: 'Profile updated successfully' });
-    } catch (error: any) {
-      return NextResponse.json(
-        { error: error.message },
-        { status: 500 }
-      );
+    if (!session) {
+      return NextResponse.json({ error: 'Not authenticated' }, { status: 401 })
     }
-  });
+
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', session.user.id)
+      .single()
+
+    return NextResponse.json({
+      user: session.user,
+      profile
+    })
+  } catch (error) {
+    console.error('Error in test-auth route:', error)
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    )
+  }
 }

@@ -1,27 +1,34 @@
-import { createClient } from '@supabase/supabase-js';
-import { Session } from '@clerk/nextjs/server';
+import { createServerClient, type CookieOptions } from '@supabase/ssr'
+import { cookies } from 'next/headers'
+import { Database } from '@/types_db'
 
 // Function to create a Supabase client with Clerk authentication
-export const createClerkSupabaseClient = (session: Session | null) => {
-  return createClient(
+export const createClerkSupabaseClient = () => {
+  const cookieStore = cookies()
+
+  return createServerClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
-      global: {
-        fetch: async (url, options = {}) => {
-          const clerkToken = await session?.getToken({ template: 'supabase' });
-
-          const headers = new Headers(options?.headers);
-          if (clerkToken) {
-            headers.set('Authorization', `Bearer ${clerkToken}`);
+      cookies: {
+        get(name: string) {
+          return cookieStore.get(name)?.value
+        },
+        set(name: string, value: string, options: CookieOptions) {
+          try {
+            cookieStore.set({ name, value, ...options })
+          } catch (error) {
+            // Handle cookie errors
           }
-
-          return fetch(url, {
-            ...options,
-            headers,
-          });
+        },
+        remove(name: string, options: CookieOptions) {
+          try {
+            cookieStore.set({ name, value: '', ...options })
+          } catch (error) {
+            // Handle cookie errors
+          }
         },
       },
     }
-  );
-};
+  )
+}
