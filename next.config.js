@@ -9,20 +9,20 @@ const nextConfig = {
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
   },
   images: {
-    domains: ['nqahimgeesyjmnvjbmwj.supabase.co'],
+    domains: ['nqahimgeesyjmnvjbmwj.supabase.co', 'images.pexels.com'],
   },
   webpack: (config, { isServer }) => {
     // Add video file handling
     config.module.rules.push({
       test: /\.(mp4|webm|ogg)$/,
-      use: {
+      use: [{
         loader: 'file-loader',
         options: {
+          name: '[name].[hash].[ext]',
           publicPath: '/_next/static/videos/',
           outputPath: 'static/videos/',
-          name: '[name].[hash].[ext]',
         },
-      },
+      }],
     });
 
     if (!isServer) {
@@ -35,8 +35,22 @@ const nextConfig = {
   },
   // Optimize for production
   experimental: {
-    optimizeCss: true,
+    optimizeCss: false,  // Disable CSS optimization since it requires critters
     scrollRestoration: true,
+  },
+  // Configure static file serving
+  async headers() {
+    return [
+      {
+        source: '/videos/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+    ];
   },
 }
 

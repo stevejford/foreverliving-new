@@ -7,6 +7,17 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { getSession } from '@/utils/supabase-auth';
 import SignOutButton from '@/components/SignOutButton';
+import dynamic from 'next/dynamic';
+
+const HomeVideo = dynamic(() => import('./components/HomeVideo'), {
+  ssr: false,
+  loading: () => (
+    <div className="absolute inset-0 bg-gray-900">
+      <div className="absolute inset-0 bg-black/60" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-transparent to-black/70" />
+    </div>
+  )
+});
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
@@ -43,16 +54,7 @@ export default function Home() {
   return (
     <div className="fixed inset-0 w-screen h-screen overflow-hidden">
       {/* Video Background */}
-      <video
-        className="absolute top-0 left-0 w-full h-full object-cover brightness-50"
-        src="/videos/9218233-hd_1920_1080_30fps.mp4"
-        autoPlay
-        loop
-        muted
-        playsInline
-        preload="auto"
-        poster="/images/poster.jpg"
-      />
+      <HomeVideo />
 
       {/* Multiple Overlay Layers for better text contrast */}
       <div className="absolute inset-0 bg-black/60" />

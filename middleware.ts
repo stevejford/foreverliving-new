@@ -3,6 +3,16 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export async function middleware(request: NextRequest) {
+  // Skip middleware for static files and videos
+  if (
+    request.nextUrl.pathname.startsWith('/_next') ||
+    request.nextUrl.pathname.startsWith('/videos') ||
+    request.nextUrl.pathname.startsWith('/images') ||
+    request.nextUrl.pathname.includes('.') // Skip files with extensions
+  ) {
+    return NextResponse.next();
+  }
+
   // Clone the request headers
   const requestHeaders = new Headers(request.headers);
 
@@ -52,7 +62,8 @@ export const config = {
      * - favicon.ico (favicon file)
      * - public folder
      * - videos (video files)
+     * - images (image files)
      */
-    '/((?!api|_next/static|_next/image|favicon.ico|public|videos).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico|public|videos|images).*)',
   ],
 };
