@@ -47,8 +47,11 @@ export default function TestAuth() {
 
   useEffect(() => {
     checkAuth();
+  }, [router, checkAuth]);
+
+  useEffect(() => {
     testProtectedApi();
-  }, [router]);
+  }, []);
 
   if (isLoading) {
     return (

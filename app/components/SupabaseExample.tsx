@@ -31,7 +31,7 @@ export default function SupabaseExample() {
     }
 
     fetchData();
-  }, []);
+  }, [supabase]);
 
   if (error) {
     return (

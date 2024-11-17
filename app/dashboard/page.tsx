@@ -59,7 +59,7 @@ export default function Dashboard() {
     }
 
     loadUser();
-  }, []);
+  }, [router, supabase]);
 
   const handleCreateMemorial = () => {
     router.push('/create-memorial');
