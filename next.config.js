@@ -10,8 +10,26 @@ const nextConfig = {
   images: {
     domains: ['nqahimgeesyjmnvjbmwj.supabase.co', 'images.pexels.com'],
   },
+  // Configure which routes are static and which are dynamic
+  serverRuntimeConfig: {
+    // Will only be available on the server side
+    dynamicRoutes: [
+      '/dashboard',
+      '/create-memorial',
+      '/gallery',
+      '/sign-in',
+      '/sign-up',
+      '/sign-out',
+      '/contact',
+      '/auth/callback',
+      '/sso-callback',
+      '/api/protected-route',
+      '/api/supabase-token',
+      '/api/test-auth',
+      '/api'
+    ]
+  },
   webpack: (config, { isServer }) => {
-    // Add video file handling
     config.module.rules.push({
       test: /\.(mp4|webm|ogg)$/,
       use: {
@@ -24,7 +42,6 @@ const nextConfig = {
       },
     });
 
-    // Add font file handling
     config.module.rules.push({
       test: /\.(woff|woff2|eot|ttf|otf)$/,
       use: {
