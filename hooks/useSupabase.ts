@@ -1,36 +1,23 @@
 import { useEffect } from 'react';
-import { useAuth } from '@clerk/nextjs';
-import { supabase } from '@/utils/supabaseClient';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 export function useSupabase() {
-  const { getToken } = useAuth();
+  const supabase = createClientComponentClient();
 
   useEffect(() => {
-    const updateSupabaseAuth = async () => {
-      try {
-        // Get the JWT token from Clerk
-        const token = await getToken({ template: 'supabase' });
-        
-        if (token) {
-          // Update Supabase auth
-          supabase.auth.setSession({
-            access_token: token,
-            refresh_token: '',
-          });
-        }
-      } catch (error) {
-        console.error('Error updating Supabase auth:', error);
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session) {
+        // Handle auth state changes
+        console.log('Auth state changed:', event, session);
       }
+    });
+
+    return () => {
+      subscription.unsubscribe();
     };
+  }, [supabase.auth]);
 
-    // Update auth when component mounts
-    updateSupabaseAuth();
-
-    // Set up interval to refresh token
-    const interval = setInterval(updateSupabaseAuth, 1000 * 60 * 59); // Refresh every 59 minutes
-
-    return () => clearInterval(interval);
-  }, [getToken]);
-
-  return supabase;
+  return { supabase };
 }
