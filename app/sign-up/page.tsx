@@ -43,17 +43,8 @@ export default function SignUp() {
 
   return (
     <AuthLayout 
-      title={
-        <div className="flex flex-col items-center space-y-2">
-          <FaHeart className="text-4xl text-rose-500 animate-pulse" />
-          <h1 className="text-3xl font-bold text-gray-900">Create Account</h1>
-        </div>
-      }
-      subtitle={
-        <span className="text-gray-600">
-          Join our community and start preserving your precious memories.
-        </span>
-      }
+      title="Create Account"
+      subtitle="Sign up to create memories that last forever"
     >
       <div className="space-y-6">
         <motion.form 
