@@ -48,15 +48,27 @@ const nextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://nqahimgeesyjmnvjbmwj.supabase.co",
-              "style-src 'self' 'unsafe-inline'",
-              "img-src 'self' data: blob: https://nqahimgeesyjmnvjbmwj.supabase.co https://images.pexels.com",
-              "media-src 'self' https://nqahimgeesyjmnvjbmwj.supabase.co",
-              "connect-src 'self' https://nqahimgeesyjmnvjbmwj.supabase.co https://api.emailjs.com",
-              "font-src 'self'",
-              "frame-src 'self'",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.supabase.co https://*.emailjs.com blob:",
+              "style-src 'self' 'unsafe-inline' https://*.supabase.co",
+              "img-src 'self' data: blob: https://*.supabase.co https://images.pexels.com",
+              "media-src 'self' blob: https://*.supabase.co",
+              "connect-src 'self' https://*.supabase.co https://api.emailjs.com wss://*.supabase.co",
+              "font-src 'self' data:",
+              "frame-src 'self' https://*.supabase.co",
+              "worker-src 'self' blob:",
+              "manifest-src 'self'",
+              "base-uri 'self'",
+              "form-action 'self'",
               "object-src 'none'"
             ].join('; ')
+          },
+          {
+            key: 'X-DNS-Prefetch-Control',
+            value: 'on'
+          },
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=31536000; includeSubDomains'
           },
           {
             key: 'X-Frame-Options',
@@ -68,11 +80,11 @@ const nextConfig = {
           },
           {
             key: 'Referrer-Policy',
-            value: 'origin-when-cross-origin'
+            value: 'strict-origin-when-cross-origin'
           },
           {
             key: 'Permissions-Policy',
-            value: 'camera=(), microphone=(), geolocation=()'
+            value: 'camera=(), microphone=(), geolocation=(), interest-cohort=()'
           },
           {
             key: 'Cache-Control',
