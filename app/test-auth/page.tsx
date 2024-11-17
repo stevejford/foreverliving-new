@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import SignOutButton from '@/components/SignOutButton';
 import { getUser } from '@/utils/supabase-auth';
@@ -12,7 +12,7 @@ export default function TestAuth() {
   const [testResult, setTestResult] = useState<string>('');
   const router = useRouter();
 
-  const checkAuth = async () => {
+  const checkAuth = useCallback(async () => {
     try {
       const { user, error } = await getUser();
       if (error || !user) {
@@ -26,7 +26,7 @@ export default function TestAuth() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [router]);
 
   const testProtectedApi = async () => {
     try {
