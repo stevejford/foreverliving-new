@@ -9,23 +9,24 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@headlessui/react": "^1.7.17",
+    "@heroicons/react": "^2.0.18",
+    "@radix-ui/react-slot": "^1.1.0",
     "@supabase/auth-helpers-nextjs": "^0.10.0",
     "@supabase/auth-ui-react": "^0.4.7",
     "@supabase/auth-ui-shared": "^0.1.8",
     "@supabase/supabase-js": "^2.46.1",
+    "clsx": "^2.0.0",
     "framer-motion": "^10.16.4",
+    "lucide-react": "^0.292.0",
     "next": "latest",
     "react": "latest",
     "react-dom": "latest",
     "react-easy-crop": "^5.1.0",
     "react-hot-toast": "^2.4.1",
     "react-icons": "^4.11.0",
-    "tailwindcss-animate": "^1.0.7",
-    "@headlessui/react": "^1.7.17",
-    "@heroicons/react": "^2.0.18",
-    "clsx": "^2.0.0",
-    "lucide-react": "^0.292.0",
-    "tailwind-merge": "^2.0.0"
+    "tailwind-merge": "^2.0.0",
+    "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
     "@types/node": "latest",
