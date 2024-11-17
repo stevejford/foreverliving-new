@@ -21,11 +21,9 @@ const nextConfig = {
     }
     return config
   },
-  // Disable static exports
-  trailingSlash: false,
-  // Enable server-side features
   experimental: {
-    serverActions: true
+    serverActions: true,
+    serverComponents: true,
   }
 }
 

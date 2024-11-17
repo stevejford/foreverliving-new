@@ -1,7 +1,5 @@
 import "./globals.css";
 import { Merriweather, Open_Sans } from 'next/font/google';
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
 import { Toaster } from 'react-hot-toast';
 
 const merriweather = Merriweather({
@@ -20,13 +18,13 @@ export const metadata = {
   description: "A digital space for preserving memories and celebrating lives that inspire us forever.",
 };
 
-export default async function RootLayout({
+export const dynamic = 'force-dynamic';
+
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const supabase = createServerComponentClient({ cookies });
-
   return (
     <html lang="en">
       <body className={`${merriweather.variable} ${openSans.variable} font-sans`}>
