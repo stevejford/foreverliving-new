@@ -12,11 +12,6 @@ export default function TestAuth() {
   const [testResult, setTestResult] = useState<string>('');
   const router = useRouter();
 
-  useEffect(() => {
-    checkAuth();
-    testProtectedApi();
-  }, []);
-
   const checkAuth = async () => {
     try {
       const { user, error } = await getUser();
@@ -49,6 +44,11 @@ export default function TestAuth() {
       toast.error('Protected API route test failed');
     }
   };
+
+  useEffect(() => {
+    checkAuth();
+    testProtectedApi();
+  }, [router]);
 
   if (isLoading) {
     return (

@@ -26,7 +26,8 @@ export default function Gallery() {
   useEffect(() => {
     async function loadMemorials() {
       try {
-        const currentUser = await getUser();
+        const { user: currentUser, error: userError } = await getUser();
+        if (userError) throw userError;
         if (!currentUser) {
           router.push('/sign-in');
           return;
@@ -48,7 +49,7 @@ export default function Gallery() {
     }
 
     loadMemorials();
-  }, [router]);
+  }, [router, supabase]);
 
   const handleMemorialClick = (id: string) => {
     router.push(`/memorial/${id}`);

@@ -12,7 +12,8 @@ export default function SupabaseExample() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const user = await getUser();
+        const { user, error: userError } = await getUser();
+        if (userError) throw userError;
         if (!user) return;
 
         // Example query - replace 'your_table' with your actual table name
@@ -33,16 +34,22 @@ export default function SupabaseExample() {
   }, []);
 
   if (error) {
-    return <div className="text-red-500">Error: {error}</div>;
+    return (
+      <div className="p-4 bg-red-50 text-red-600 rounded-md">
+        Error: {error}
+      </div>
+    );
   }
 
   return (
-    <div>
-      <h2 className="text-xl font-bold mb-4">Recent Memorials</h2>
+    <div className="p-4">
+      <h2 className="text-xl font-bold mb-4">Your Recent Memorials</h2>
       {data ? (
-        <pre>{JSON.stringify(data, null, 2)}</pre>
+        <pre className="bg-gray-100 p-4 rounded-md overflow-auto">
+          {JSON.stringify(data, null, 2)}
+        </pre>
       ) : (
-        <div>Loading...</div>
+        <p>Loading...</p>
       )}
     </div>
   );

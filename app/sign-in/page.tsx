@@ -40,17 +40,8 @@ export default function SignIn() {
 
   return (
     <AuthLayout 
-      title={
-        <div className="flex flex-col items-center space-y-2">
-          <FaHeart className="text-4xl text-rose-500 animate-pulse" />
-          <h1 className="text-3xl font-bold text-gray-900">Welcome Home</h1>
-        </div>
-      }
-      subtitle={
-        <span className="text-gray-600">
-          Your memories matter. Sign in to continue your journey.
-        </span>
-      }
+      title="Welcome Home"
+      subtitle="Your memories matter. Sign in to continue your journey."
     >
       <div className="space-y-6">
         <motion.form 

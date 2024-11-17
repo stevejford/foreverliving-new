@@ -1,13 +1,17 @@
 'use client';
 
 import { useState } from 'react';
-import { useSignIn } from "@clerk/nextjs";
+import { createClient } from '@supabase/supabase-js';
 import Link from 'next/link';
 import AuthLayout from '../components/AuthLayout';
 import { motion } from 'framer-motion';
 
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
+
 export default function ForgotPassword() {
-  const { isLoaded, signIn } = useSignIn();
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
@@ -15,21 +19,18 @@ export default function ForgotPassword() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isLoaded) return;
+    setIsLoading(true);
+    setError('');
 
     try {
-      setIsLoading(true);
-      setError('');
-      setSuccess(false);
-      
-      await signIn.create({
-        strategy: "reset_password_email_code",
-        identifier: email,
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/auth/reset-password`,
       });
-      
+
+      if (error) throw error;
       setSuccess(true);
     } catch (err: any) {
-      setError(err.errors?.[0]?.message || 'An error occurred. Please try again.');
+      setError(err.message || 'An error occurred while resetting your password');
     } finally {
       setIsLoading(false);
     }

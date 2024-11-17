@@ -27,7 +27,8 @@ export default function Dashboard() {
   useEffect(() => {
     async function loadUser() {
       try {
-        const currentUser = await getUser();
+        const { user: currentUser, error: userError } = await getUser();
+        if (userError) throw userError;
         if (!currentUser) {
           router.push('/sign-in');
           return;
@@ -49,34 +50,26 @@ export default function Dashboard() {
         }
         
         setRecentMemorials(memorials as Memorial[]);
-      } catch (error: any) {
-        console.error('Error in loadUser:', error);
-        toast.error('Something went wrong');
+      } catch (err: any) {
+        console.error('Error:', err);
+        toast.error(err.message);
       } finally {
         setIsLoading(false);
       }
     }
 
     loadUser();
-  }, [router]);
+  }, []);
 
   const handleCreateMemorial = () => {
     router.push('/create-memorial');
   };
 
-  const handleViewGallery = () => {
-    router.push('/gallery');
-  };
-
-  const handleInvites = () => {
-    router.push('/invites');
-  };
-
   if (isLoading) {
     return (
       <DashboardLayout>
-        <div className="flex items-center justify-center h-[calc(100vh-4rem)]">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-rose-500"></div>
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900"></div>
         </div>
       </DashboardLayout>
     );
@@ -84,131 +77,96 @@ export default function Dashboard() {
 
   return (
     <DashboardLayout>
-      <div className="max-w-6xl mx-auto">
+      <div className="p-6">
         {/* Welcome Section */}
-        <div className="mb-12">
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-4xl font-bold text-gray-900 mb-4"
-          >
-            Welcome, {user?.user_metadata?.firstName || 'Friend'}
-          </motion.h1>
-          <p className="text-lg text-gray-600">
-            Create and manage your memorial pages, share memories, and connect with loved ones.
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-800">
+            Welcome back, {user?.user_metadata?.firstName || 'Friend'}
+          </h1>
+          <p className="text-gray-600 mt-2">
+            Here's an overview of your memorial pages and recent activity.
           </p>
         </div>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="p-4 bg-blue-600 text-white rounded-lg shadow-md flex items-center justify-center space-x-2"
             onClick={handleCreateMemorial}
           >
-            <div className="flex items-center gap-4 mb-4">
-              <div className="p-3 bg-rose-100 rounded-lg">
-                <FaPlus className="text-xl text-rose-600" />
-              </div>
-              <h3 className="text-lg font-semibold">Create Memorial</h3>
-            </div>
-            <p className="text-gray-600 mb-4">
-              Honor and celebrate the life of your loved one by creating a memorial page.
-            </p>
-            <span className="text-rose-600 font-medium hover:text-rose-700">
-              Get Started →
-            </span>
-          </motion.div>
+            <FaPlus />
+            <span>Create New Memorial</span>
+          </motion.button>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow cursor-pointer"
-            onClick={handleViewGallery}
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="p-4 bg-pink-600 text-white rounded-lg shadow-md flex items-center justify-center space-x-2"
           >
-            <div className="flex items-center gap-4 mb-4">
-              <div className="p-3 bg-rose-100 rounded-lg">
-                <FaHeart className="text-xl text-rose-600" />
-              </div>
-              <h3 className="text-lg font-semibold">Share Memories</h3>
-            </div>
-            <p className="text-gray-600 mb-4">
-              Add photos, stories, and cherished moments to existing memorial pages.
-            </p>
-            <span className="text-rose-600 font-medium hover:text-rose-700">
-              View Gallery →
-            </span>
-          </motion.div>
+            <FaHeart />
+            <span>View Tributes</span>
+          </motion.button>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow cursor-pointer"
-            onClick={handleInvites}
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="p-4 bg-green-600 text-white rounded-lg shadow-md flex items-center justify-center space-x-2"
           >
-            <div className="flex items-center gap-4 mb-4">
-              <div className="p-3 bg-rose-100 rounded-lg">
-                <FaShare className="text-xl text-rose-600" />
-              </div>
-              <h3 className="text-lg font-semibold">Invite Others</h3>
-            </div>
-            <p className="text-gray-600 mb-4">
-              Connect with family and friends to collaborate on memorial pages.
-            </p>
-            <span className="text-rose-600 font-medium hover:text-rose-700">
-              Send Invites →
-            </span>
-          </motion.div>
+            <FaShare />
+            <span>Share Memorial</span>
+          </motion.button>
         </div>
 
         {/* Recent Memorials */}
-        <div className="bg-white p-6 rounded-xl shadow-sm">
-          <h2 className="text-2xl font-semibold mb-6">Recent Memorials</h2>
+        <div>
+          <h2 className="text-2xl font-semibold text-gray-800 mb-4">Recent Memorials</h2>
           {recentMemorials.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {recentMemorials.map((memorial: Memorial) => (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {recentMemorials.map((memorial) => (
                 <motion.div
                   key={memorial.id}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="flex items-center gap-4 p-4 border border-gray-200 rounded-lg hover:shadow-sm transition-shadow cursor-pointer"
-                  onClick={() => router.push(`/memorial/${memorial.id}`)}
+                  whileHover={{ scale: 1.02 }}
+                  className="bg-white rounded-lg shadow-md overflow-hidden"
                 >
-                  <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-100">
-                    {memorial.image_url ? (
-                      <img 
-                        src={memorial.image_url} 
+                  <div className="h-48 bg-gray-200">
+                    {memorial.image_url && (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={memorial.image_url}
                         alt={memorial.name}
                         className="w-full h-full object-cover"
                       />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-gray-400">
-                        <FaHeart className="text-2xl" />
-                      </div>
                     )}
                   </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-900">{memorial.name}</h3>
-                    <p className="text-gray-500 text-sm">
-                      Created {new Date(memorial.created_at).toLocaleDateString()}
+                  <div className="p-4">
+                    <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                      {memorial.name}
+                    </h3>
+                    <p className="text-sm text-gray-600">
+                      Created on {new Date(memorial.created_at).toLocaleDateString()}
                     </p>
+                    <button
+                      onClick={() => router.push(`/memorial/${memorial.id}`)}
+                      className="mt-3 text-blue-600 hover:text-blue-800 font-medium"
+                    >
+                      View Memorial →
+                    </button>
                   </div>
                 </motion.div>
               ))}
             </div>
           ) : (
-            <div className="text-center py-12">
-              <p className="text-gray-500 mb-4">No memorials yet. Create your first one!</p>
+            <div className="text-center py-8">
+              <p className="text-gray-600">
+                You haven't created any memorials yet.
+              </p>
               <button
                 onClick={handleCreateMemorial}
-                className="inline-flex items-center px-6 py-3 bg-rose-600 text-white rounded-lg hover:bg-rose-700 transition-colors"
+                className="mt-4 text-blue-600 hover:text-blue-800 font-medium"
               >
-                <FaPlus className="mr-2" />
-                Create Memorial
+                Create your first memorial →
               </button>
             </div>
           )}
