@@ -12,7 +12,6 @@ const nextConfig = {
     domains: ['nqahimgeesyjmnvjbmwj.supabase.co'],
   },
   webpack: (config, { isServer }) => {
-    // Enable hot reload
     if (!isServer) {
       config.watchOptions = {
         poll: 1000,
@@ -22,8 +21,7 @@ const nextConfig = {
     return config
   },
   experimental: {
-    serverActions: true,
-    serverComponents: true,
+    missingSuspenseWithCSRError: false
   }
 }
 

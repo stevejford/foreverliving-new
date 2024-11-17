@@ -18,7 +18,9 @@ export const metadata = {
   description: "A digital space for preserving memories and celebrating lives that inspire us forever.",
 };
 
+// Force dynamic rendering for all pages
 export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export default function RootLayout({
   children,
