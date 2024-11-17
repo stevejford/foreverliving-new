@@ -10,6 +10,8 @@ A beautiful and respectful platform for creating and sharing digital memorials, 
 - 🌐 Share memorials with loved ones
 - 📱 Responsive design for all devices
 - ⚡ Fast and modern user interface
+- 🔄 Reverse proxy with Traefik
+- 🔒 Automatic HTTPS with Let's Encrypt
 
 ## Tech Stack
 
@@ -21,6 +23,8 @@ A beautiful and respectful platform for creating and sharing digital memorials, 
 - **Icons**: React Icons
 - **Forms**: React Hook Form
 - **Notifications**: React Hot Toast
+- **Deployment**: Docker & Traefik
+- **SSL**: Let's Encrypt
 
 ## Getting Started
 
@@ -29,6 +33,8 @@ A beautiful and respectful platform for creating and sharing digital memorials, 
 - Node.js 18+ 
 - npm or yarn
 - Supabase account
+- Docker and Docker Compose
+- Domain name (for production)
 
 ### Environment Variables
 
@@ -40,7 +46,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 ```
 
-### Installation
+### Local Development
 
 1. Clone the repository:
 ```bash
@@ -51,65 +57,75 @@ cd forever-living-memorial
 2. Install dependencies:
 ```bash
 npm install
-# or
-yarn install
 ```
 
 3. Run the development server:
 ```bash
 npm run dev
-# or
-yarn dev
 ```
 
-4. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Production Deployment with Docker and Traefik
 
-## Database Schema
+1. Update configuration files:
+   - Set your domain in `docker-compose.yml`
+   - Set your email in `docker-compose.yml` and `traefik.yml` for Let's Encrypt
 
-The application uses the following main tables:
+2. Start the application:
+   ```bash
+   # On Windows:
+   start.bat
 
-### Users
-- Managed by Supabase Auth
-- Contains user authentication and profile data
+   # On Linux/Mac:
+   ./start.sh
+   ```
 
-### Memorials
-```sql
-create table memorials (
-  id uuid default uuid_generate_v4() primary key,
-  user_id uuid references auth.users(id),
-  name text not null,
-  date_of_birth date,
-  date_of_passing date,
-  biography text,
-  image_url text,
-  is_public boolean default true,
-  allow_comments boolean default true,
-  created_at timestamp with time zone default now(),
-  updated_at timestamp with time zone default now()
-);
+This will:
+- Create required Docker networks
+- Set up Traefik as a reverse proxy
+- Configure automatic HTTPS with Let's Encrypt
+- Start your Next.js application
+
+Access points:
+- Application: https://your-domain.com
+- Traefik Dashboard: http://localhost:8080
+
+### Docker Commands
+
+```bash
+# Start services
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop services
+docker-compose down
+
+# Rebuild and restart services
+docker-compose up -d --build
 ```
 
-### Photos
-```sql
-create table memorial_photos (
-  id uuid default uuid_generate_v4() primary key,
-  memorial_id uuid references memorials(id) on delete cascade,
-  url text not null,
-  caption text,
-  created_at timestamp with time zone default now()
-);
+## Project Structure
+
 ```
-
-## Security
-
-- Row Level Security (RLS) policies ensure users can only access their own data
-- Secure file uploads with Supabase Storage
-- Protected API routes
-- Secure authentication flow
+├── app/                # Next.js app directory
+├── components/         # React components
+├── public/            # Static assets
+├── styles/           # Global styles
+├── utils/            # Utility functions
+├── docker-compose.yml # Docker composition
+├── Dockerfile        # Docker build instructions
+├── traefik.yml       # Traefik configuration
+└── next.config.js    # Next.js configuration
+```
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
 ## License
 

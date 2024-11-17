@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import DateInput from "@/components/ui/date-input";
+import DateInput from "../components/ui/date-input";
 import { motion } from "framer-motion";
 import { FaUpload } from "react-icons/fa";
 import { useRouter } from 'next/navigation';

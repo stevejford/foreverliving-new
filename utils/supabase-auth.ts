@@ -31,11 +31,12 @@ export async function signOut() {
 
 export async function getSession() {
   const supabase = createClientComponentClient();
-  return await supabase.auth.getSession();
+  const { data: { session }, error } = await supabase.auth.getSession();
+  return { session, error };
 }
 
 export async function getUser() {
   const supabase = createClientComponentClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  return user;
+  const { data: { user }, error } = await supabase.auth.getUser();
+  return { user, error };
 }

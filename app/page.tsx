@@ -21,10 +21,16 @@ export default function Home() {
 
   const checkAuth = async () => {
     try {
-      const { session } = await getSession();
-      setIsSignedIn(!!session);
+      const { session, error } = await getSession();
+      if (error) {
+        console.error('Auth error:', error);
+        setIsSignedIn(false);
+      } else {
+        setIsSignedIn(!!session);
+      }
     } catch (error) {
       console.error('Auth check failed:', error);
+      setIsSignedIn(false);
     } finally {
       setIsLoading(false);
     }

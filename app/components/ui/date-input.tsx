@@ -2,14 +2,15 @@
 
 import { useState } from 'react';
 
-interface DateInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+type DateInputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'value' | 'onChange'> & {
   value: Date | undefined;
   onChange: (date: Date | undefined) => void;
   label?: string;
   error?: string;
-}
+  id: string;
+};
 
-export default function DateInput({ value, onChange, label, error, ...props }: DateInputProps) {
+export default function DateInput({ value, onChange, label, error, id, ...props }: DateInputProps) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const date = e.target.value ? new Date(e.target.value) : undefined;
     onChange(date);
@@ -18,12 +19,13 @@ export default function DateInput({ value, onChange, label, error, ...props }: D
   return (
     <div className="w-full">
       {label && (
-        <label htmlFor={props.id} className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor={id} className="block text-sm font-medium text-gray-700 mb-1">
           {label}
         </label>
       )}
       <input
         type="date"
+        id={id}
         {...props}
         value={value ? value.toISOString().split('T')[0] : ''}
         onChange={handleChange}
