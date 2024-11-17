@@ -19,9 +19,6 @@ const nextConfig = {
       }
     }
     return config
-  },
-  experimental: {
-    missingSuspenseWithCSRError: false
   }
 }
 

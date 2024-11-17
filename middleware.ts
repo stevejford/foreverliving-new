@@ -3,7 +3,18 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export async function middleware(request: NextRequest) {
-  const res = NextResponse.next();
+  // Clone the request headers
+  const requestHeaders = new Headers(request.headers);
+
+  // Add new request headers
+  requestHeaders.set('x-url', request.url);
+
+  const res = NextResponse.next({
+    request: {
+      headers: requestHeaders,
+    },
+  });
+
   const supabase = createMiddlewareClient({ req: request, res });
 
   const {
@@ -33,11 +44,14 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/dashboard/:path*',
-    '/create-memorial/:path*',
-    '/gallery/:path*',
-    '/test-auth/:path*',
-    '/sign-in/:path*',
-    '/sign-up/:path*',
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * - public folder
+     */
+    '/((?!api|_next/static|_next/image|favicon.ico|public).*)',
   ],
 };
