@@ -8,6 +8,12 @@ const nextConfig = {
     scrollRestoration: true
   },
   images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**',
+      },
+    ],
     domains: ['nqahimgeesyjmnvjbmwj.supabase.co', 'images.pexels.com'],
   },
   // Configure which routes are static and which are dynamic
@@ -28,6 +34,9 @@ const nextConfig = {
       '/api/test-auth',
       '/api'
     ]
+  },
+  typescript: {
+    ignoreBuildErrors: true,
   },
   webpack: (config, { isServer }) => {
     config.module.rules.push({

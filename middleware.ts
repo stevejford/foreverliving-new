@@ -2,81 +2,50 @@ import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-// Define protected routes directly in middleware
-const protectedRoutes = [
-  '/dashboard',
-  '/create-memorial',
-  '/gallery',
-  '/contact',
-  '/auth/callback',
-  '/sso-callback',
-  '/api'
-]
+export async function middleware(request: NextRequest) {
+  const res = NextResponse.next()
+  const supabase = createMiddlewareClient({ req: request, res })
 
-export async function middleware(req: NextRequest) {
-  try {
-    const res = NextResponse.next()
-    const supabase = createMiddlewareClient({ req, res })
+  const {
+    data: { session },
+  } = await supabase.auth.getSession()
 
-    // Handle static files and assets
-    if (
-      req.nextUrl.pathname.startsWith('/_next/') ||
-      req.nextUrl.pathname.startsWith('/static/') ||
-      req.nextUrl.pathname.startsWith('/videos') ||
-      req.nextUrl.pathname.startsWith('/images') ||
-      req.nextUrl.pathname.includes('.') // Skip files with extensions
-    ) {
-      return res
-    }
+  // Protected routes that require authentication
+  const protectedPaths = ['/dashboard', '/create-memorial', '/gallery']
+  const isProtectedPath = protectedPaths.some((path) => 
+    request.nextUrl.pathname.startsWith(path)
+  )
 
-    // Set proper MIME types for static assets
-    if (req.nextUrl.pathname.endsWith('.js')) {
-      res.headers.set('Content-Type', 'application/javascript')
-    } else if (req.nextUrl.pathname.endsWith('.css')) {
-      res.headers.set('Content-Type', 'text/css')
-    } else if (req.nextUrl.pathname.endsWith('.woff2')) {
-      res.headers.set('Content-Type', 'font/woff2')
-    }
+  // Auth routes
+  const authPaths = ['/sign-in', '/sign-up']
+  const isAuthPath = authPaths.some((path) => 
+    request.nextUrl.pathname.startsWith(path)
+  )
 
-    // Get the session first
-    const { data: { session } } = await supabase.auth.getSession()
-
-    // Check if route requires authentication
-    const isProtectedRoute = protectedRoutes.some(route => 
-      req.nextUrl.pathname === route || req.nextUrl.pathname.startsWith(`${route}/`)
-    )
-
-    if (isProtectedRoute && !session) {
-      return NextResponse.redirect(new URL('/sign-in', req.url))
-    }
-
-    // Auth routes (sign-in, sign-up)
-    const authRoutes = ['/sign-in', '/sign-up']
-    const isAuthRoute = authRoutes.some(route => req.nextUrl.pathname.startsWith(route))
-
-    if (isAuthRoute && session) {
-      return NextResponse.redirect(new URL('/dashboard', req.url))
-    }
-
-    // Add custom headers
-    res.headers.set('x-url', req.url)
-
-    return res
-  } catch (e) {
-    console.error('Middleware error:', e)
-    return NextResponse.next()
+  // Redirect if accessing protected routes without session
+  if (isProtectedPath && !session) {
+    const redirectUrl = new URL('/sign-in', request.url)
+    redirectUrl.searchParams.set('redirectTo', request.nextUrl.pathname)
+    return NextResponse.redirect(redirectUrl)
   }
+
+  // Redirect if accessing auth routes with active session
+  if (isAuthPath && session) {
+    return NextResponse.redirect(new URL('/dashboard', request.url))
+  }
+
+  return res
 }
 
 export const config = {
   matcher: [
     /*
      * Match all request paths except for the ones starting with:
+     * - api (API routes)
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
-     * - public folder
      */
-    '/((?!_next/static|_next/image|favicon.ico|public/).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico).*)',
   ],
 }
