@@ -11,7 +11,11 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: '**',
+        hostname: '**.supabase.co',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.pexels.com',
       },
     ],
     domains: ['nqahimgeesyjmnvjbmwj.supabase.co', 'images.pexels.com'],
@@ -72,24 +76,10 @@ const nextConfig = {
         source: '/:path*',
         headers: [
           {
-            key: 'Content-Security-Policy',
-            value: [
-              "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: data:",
-              "style-src 'self' 'unsafe-inline'",
-              "font-src 'self' data: blob:",
-              "img-src 'self' data: blob: https://*.supabase.co https://images.pexels.com",
-              "media-src 'self' blob: https://*.supabase.co",
-              "connect-src 'self' https://*.supabase.co https://api.emailjs.com wss://*.supabase.co",
-              "frame-src 'self' https://*.supabase.co",
-              "worker-src 'self' blob:",
-              "child-src 'self' blob:",
-              "form-action 'self'",
-              "base-uri 'self'",
-              "object-src 'none'"
-            ].join('; ')
-          }
-        ]
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
       },
       {
         source: '/_next/static/:path*',
@@ -133,6 +123,29 @@ const nextConfig = {
           {
             key: 'Content-Type',
             value: 'font/woff2'
+          }
+        ]
+      },
+      {
+        source: '/:path*',
+        headers: [
+          {
+            key: 'Content-Security-Policy',
+            value: [
+              "default-src 'self'",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: data:",
+              "style-src 'self' 'unsafe-inline'",
+              "font-src 'self' data: blob:",
+              "img-src 'self' data: blob: https://*.supabase.co https://images.pexels.com",
+              "media-src 'self' blob: https://*.supabase.co",
+              "connect-src 'self' https://*.supabase.co https://api.emailjs.com wss://*.supabase.co",
+              "frame-src 'self' https://*.supabase.co",
+              "worker-src 'self' blob:",
+              "child-src 'self' blob:",
+              "form-action 'self'",
+              "base-uri 'self'",
+              "object-src 'none'"
+            ].join('; ')
           }
         ]
       }

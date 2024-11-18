@@ -22,13 +22,21 @@ ENV NODE_ENV=production
 
 # Copy necessary files from builder
 COPY --from=builder /app/next.config.js ./
+COPY --from=builder /app/server.js ./
 COPY --from=builder /app/public ./public
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/package*.json ./
+
+# Install production dependencies
+RUN npm ci --production
 
 # Add non-root user
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
+
+# Set correct permissions
+RUN chown -R nextjs:nodejs /app
+
 USER nextjs
 
 EXPOSE 3000
